@@ -6,7 +6,7 @@ const farmerController = require("../controllers/farmer"); //importing farmerCon
 const router = express.Router();
 
 //get farmer
-router.get("/", farmerController.getFarmer);
+router.get("/:id", farmerController.getFarmer);
 
 //post add produce
 router.post("/add-produce", farmerController.addProduce);
