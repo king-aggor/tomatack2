@@ -9,16 +9,16 @@ const router = express.Router();
 router.get("/:id", farmerController.getFarmer);
 
 //post add produce
-router.post("/add-produce", farmerController.addProduce);
+router.post("/add-produce/:id", farmerController.addProduce);
 
 //get produce
-router.get("/produce", farmerController.getProduce);
+router.get("/produce/:id", farmerController.getProduce);
 
 //delete produce
-router.delete("/delete-produce", farmerController.deleteProduce);
+router.delete("/delete-produce/:id", farmerController.deleteProduce);
 
 //get all farmer produces
-router.get("/all-produces", farmerController.getFarmerProduces);
+router.get("/all-produces/:id", farmerController.getFarmerProduces);
 
 //get available produces
 router.get("/available-produces", farmerController.getAvailableProduces);
