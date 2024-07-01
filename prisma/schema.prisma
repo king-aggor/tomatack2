@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Farmer{
+  id Int @id @default(autoincrement())
+  name String
+  digital_address String
+  region String
+  contact String
+  email String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  products Product[]
+}
+
+model Wholesaler{
+  id Int @id @default(autoincrement())
+  name String
+  digital_address String
+  region String
+  contact String 
+  email String?
+
+  products Product[]
+}
+
+model Retailer{
+  id Int @id @default(autoincrement())
+  name String
+  digital_address String
+  region String
+  contact String 
+  email String?
+
+  products Product[]
+}
+
+model Transporter{
+  id Int @id @default(autoincrement())
+  name String
+  digital_address String
+  region String
+  contact String 
+  email String?
+}
+
+model Product{
+  batch_no Int @id @default(autoincrement())
+  variety String
+  harvest_date DateTime
+  sold_date DateTime
+  Price Decimal
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  farmerId Int
+  farmer Farmer @relation(fields: [farmerId], references: [id])
+
+  wholesalerId Int?
+  wholsaler Wholesaler? @relation(fields: [wholesalerId], references: [id])
+
+  retailerId Int?
+  retailer Retailer? @relation(fields: [retailerId], references: [id])
+} 
