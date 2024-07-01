@@ -1,10 +1,23 @@
 //modules
+const {PrismaClient}= require("@prisma/client")
 
+// creater an instace of prisma
+const prisma = new PrismaClient()
 // get farmer
-exports.getFarmer = (req, res) => {
-  res.status(200).json({
-    message: "Farmer Details",
-  });
+exports.getFarmer = async (req, res) => {
+  try{
+    const id = parseInt(req.params.id)
+    const farmer = await prisma.farmer.findUnique({
+      where:{
+        id:id
+      }
+    })
+   res.status(200).json({
+    farmer
+   })
+  }catch(err){
+    console.log(err)
+  }
 };
 
 //post add produce
