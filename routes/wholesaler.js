@@ -6,11 +6,11 @@ const wholesalerController = require("../controllers/wholesaler"); //importing w
 const router = express.Router();
 
 // get wholesaler
-router.get("/", wholesalerController.getWholesaler);
+router.get("/:id", wholesalerController.getWholesaler);
 
 // get farmer available produces
 router.get(
-  "/farmer-availble-produces",
+  "/farmer-available-produces/:id",
   wholesalerController.farmerAvailableProduces
 );
 

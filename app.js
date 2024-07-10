@@ -22,7 +22,12 @@ app.use("/farmer", farmerRouter);
 app.use("/retailer", retailerRouter);
 app.use("/wholesaler", wholesalerRouter);
 
+
 // listen for requests
 app.listen(process.env.port, () =>
   console.log(`listening on port ${process.env.port}`)
 );
+
+// app.listen(3000, function(){
+//   console.log("Server is listening on port 3000")
+// });

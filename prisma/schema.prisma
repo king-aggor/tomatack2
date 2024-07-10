@@ -60,8 +60,8 @@ model Product{
   batch_no Int @id @default(autoincrement())
   variety String
   harvest_date DateTime
-  sold_date DateTime
-  Price Decimal
+  sold_date DateTime?
+  price Decimal
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
