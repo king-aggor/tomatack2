@@ -15,7 +15,10 @@ router.get(
 );
 
 // post purchase request
-router.post("/purchase-request", wholesalerController.PurchaseRequest);
+router.post("/purchase-request/:id", wholesalerController.PurchaseRequest);
+
+// post cancel request
+router.post("/cancel-request/:id", wholesalerController.cancelRequest)
 
 // post decline purchase requests
 router.post("/decline-request", wholesalerController.declineRequest);
@@ -30,7 +33,7 @@ router.get("/purchased-produces", wholesalerController.getPurchasedProduces);
 router.get("/sold-produces", wholesalerController.getSoldProduces);
 
 // get all produces
-router.get("/all-produces", wholesalerController.getAllProduces);
+router.get("/all-produces/:id", wholesalerController.getAllProduces);
 
 // get wholesaler available produces
 router.get("/available-produces", wholesalerController.getAvailableProduces);

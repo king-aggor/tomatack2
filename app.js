@@ -27,7 +27,3 @@ app.use("/wholesaler", wholesalerRouter);
 app.listen(process.env.port, () =>
   console.log(`listening on port ${process.env.port}`)
 );
-
-// app.listen(3000, function(){
-//   console.log("Server is listening on port 3000")
-// });

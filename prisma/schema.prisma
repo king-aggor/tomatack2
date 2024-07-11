@@ -22,7 +22,9 @@ model Farmer{
   email String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   products Product[]
+  // requests wholesaler_request[]
 }
 
 model Wholesaler{
@@ -34,6 +36,7 @@ model Wholesaler{
   email String?
 
   products Product[]
+  // requests wholesaler_request[]
 }
 
 model Retailer{
@@ -62,6 +65,8 @@ model Product{
   harvest_date DateTime
   sold_date DateTime?
   price Decimal
+  // request Boolean @default(false)
+  request Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -69,8 +74,27 @@ model Product{
   farmer Farmer @relation(fields: [farmerId], references: [id])
 
   wholesalerId Int?
-  wholsaler Wholesaler? @relation(fields: [wholesalerId], references: [id])
+  wholesaler Wholesaler? @relation(fields: [wholesalerId], references: [id])
 
   retailerId Int?
   retailer Retailer? @relation(fields: [retailerId], references: [id])
+
+  // requests wholesaler_request[]
 } 
+
+// model wholesaler_request{
+//   request_no Int @id @default(autoincrement())
+//   status String
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   farmerId Int
+//   farmer Farmer @relation(fields: [farmerId], references: [id])
+
+//   wholesalerId Int
+//   wholesaler Wholesaler @relation(fields: [wholesalerId], references: [id])
+
+//   productId Int
+//   product Product @relation(fields: [productId], references: [batch_no])
+  
+// }

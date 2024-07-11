@@ -21,19 +21,19 @@ router.delete("/delete-produce/:id", farmerController.deleteProduce);
 router.get("/all-produces/:id", farmerController.getFarmerProduces);
 
 //get available produces
-router.get("/available-produces", farmerController.getAvailableProduces);
+router.get("/available-produces/:id", farmerController.getAvailableProduces);
 
 //get sold produces
-router.get("/sold-produces", farmerController.getSoldProduces);
+router.get("/sold-produces/:id", farmerController.getSoldProduces);
 
 //get purchase requests
-router.get("/purchase-requests", farmerController.getPurchaseRequests);
+router.get("/purchase-requests/:id", farmerController.getPurchaseRequests);
 
 //post confrim purchase request
-router.post("/confirm-purchase", farmerController.confirmPurchaseRequest);
+router.post("/confirm-purchase/:id", farmerController.confirmPurchaseRequest);
 
 //post decline purchase request
-router.post("/decline-purchase", farmerController.declinePurchaseRequest);
+router.post("/decline-purchase/:id", farmerController.declinePurchaseRequest);
 
 //export router
 module.exports = router;

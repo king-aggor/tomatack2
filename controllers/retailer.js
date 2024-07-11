@@ -1,17 +1,44 @@
 //modules
 
 // get retailer
-exports.getRetailer = (req, res) => {
-  res.status(200).json({
-    message: "Retailer Details",
-  });
+exports.getRetailer = async (req, res) => {
+  try{
+    const id = parseInt(req.params.id)
+    const wholesaler = await prisma.wholesaler.findUnique({
+      where:{
+        id:id
+      }
+    })
+   res.status(200).json({
+    retailer
+   })
+  }catch(err){
+    console.log(err)
+    res.status(422).json({
+      err
+    })
+  }
 };
 
 //get all wholesaler' available produce
-exports.getWholesalerAvailableProduces = (req, res) => {
-  res.status(200).json({
-    message: "Wholesalers' available produces",
-  });
+exports.getWholesalerAvailableProduces = async (req, res) => {
+  try{
+    const wholesalerId = parseInt(req.params.id)
+    const wholesalerAvailableProduces = await prisma.product.findMany({
+      where: {
+        wholesalerId,
+        retailerId:null,
+      },
+    });
+    res.status(200).json({
+      wholesalerAvailableProduces
+     })
+  }catch(err){
+    console.log(err)
+    res.status(422).json({
+      err
+    })
+  }
 };
 
 //post purchase request

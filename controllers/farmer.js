@@ -1,5 +1,6 @@
 //modules
-const {PrismaClient}= require("@prisma/client")
+const {PrismaClient}= require("@prisma/client");
+const { PurchaseRequest } = require("./wholesaler");
 
 // creater an instace of prisma
 const prisma = new PrismaClient()
@@ -34,6 +35,9 @@ exports.addProduce = async (req, res) => {
       price:req.body.price,
       farmer:{
         connect:{id}
+      },
+      request: {
+        status: false
       }
     }
   })
@@ -111,35 +115,128 @@ exports.getFarmerProduces = async (req, res) => {
 
 //get available produces
 exports.getAvailableProduces = async (req, res) => {
-  try{}catch(err){
+  try{
+    const farmerId = parseInt(req.params.id)
+    const farmerAvailableProduces = await prisma.product.findMany({
+      where: {
+        farmerId,
+        wholesalerId:null,
+      },
+    });
+    res.status(200).json({
+      message: "Farmer Available Produces",
+      farmerAvailableProduces
+    })
+  }catch(err){
     console.log(err)
   }
 };
 
 //get sold produces
-exports.getSoldProduces = (req, res) => {
-  res.status(200).json({
-    message: "Sold Produces",
-  });
+exports.getSoldProduces = async (req, res) => {
+  try{
+    const farmerId = parseInt(req.params.id)
+    const soldProduces = await prisma.product.findMany({
+      where:{
+        farmerId,
+        wholesalerId:{
+          not:null
+        }
+      }
+    })
+    res.status(200).json({
+      message: "Sold Produces",
+      soldProduces
+    })
+  }catch(err){
+    res.status(422).json({
+      err
+    });
+  }
 };
 
 //get purchase requests
-exports.getPurchaseRequests = (req, res) => {
-  res.status(200).json({
-    message: "purchase Requests",
-  });
+exports.getPurchaseRequests = async (req, res) => {
+  try{
+    const farmerId = parseInt(req.params.id)
+    const purchaseRequests = await prisma.product.findMany({
+      where:{
+        farmerId,
+        request:{
+          path: ['status'],
+          equals: true
+        }
+      }
+    })
+    res.status(200).json({
+      message: "Farmer Purchase requests",
+      purchaseRequests
+    })
+  }catch(err){
+    res.status(422).json({
+      err
+    });
+  }
 };
 
 //post confirm purchase request
-exports.confirmPurchaseRequest = (req, res) => {
-  res.status(200).json({
-    message: "Confirm purchase",
-  });
+exports.confirmPurchaseRequest = async (req, res) => {
+  try{
+    const farmerId = req.body.farmerId
+    const batch_no = parseInt(req.params.id)
+    const requestedProduce = await prisma.product.findUnique({
+      where:{
+        batch_no,
+        farmerId
+      }
+    })
+    const wholesalerId = parseInt(requestedProduce.request.wholesalerId)
+    await prisma.product.update({
+      where:{
+        batch_no,
+        farmerId
+      },
+      data:{
+        request:{
+          status:false
+        },
+        wholesalerId
+    }
+    })
+    res.status(200).json({
+      message:"Purchase Confirmed"
+    })
+  }catch(err){
+    console.log(err)
+    res.status(422).json({
+      err
+    });
+  }
 };
 
 //post decline purchase request
-exports.declinePurchaseRequest = (req, res) => {
-  res.status(200).json({
-    message: "Decline purchase",
-  });
+exports.declinePurchaseRequest = async (req, res) => {
+  try{
+    const farmerId = req.body.farmerId
+    const batch_no = parseInt(req.params.id)
+    const declinedRequest = await prisma.product.update({
+      where:{
+        batch_no,
+        farmerId
+      },
+      data:{
+        request:{
+          status:false,
+        }
+      }
+    })
+    res.status(200).json({
+      message: "Purchase request declined"
+    })
+  }catch(err){
+    console.log(err)
+    res.status(422).json({
+      err
+    });
+  }
 };
