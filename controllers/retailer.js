@@ -4,9 +4,9 @@
 exports.getRetailer = async (req, res) => {
   try{
     const id = parseInt(req.params.id)
-    const wholesaler = await prisma.wholesaler.findUnique({
+    const retailer = await prisma.retailer.findUnique({
       where:{
-        id:id
+        id
       }
     })
    res.status(200).json({
@@ -42,10 +42,30 @@ exports.getWholesalerAvailableProduces = async (req, res) => {
 };
 
 //post purchase request
-exports.purchaseRequest = (req, res) => {
-  res.status(200).json({
-    message: "Purchase Request",
-  });
+exports.purchaseRequest = async (req, res) => {
+  try{
+    const batch_no = parseInt(req.params.id)
+    const request = await prisma.product.update({
+      where:{
+        batch_no
+      },
+      data:{
+        request: {
+          status: true,
+          retailerId: req.body.retailerId
+        }
+      },
+    })
+    res.status(200).json({
+      request,
+      message: "Purchase Request successful",
+    })
+  }catch(err){
+    console.log(err)
+    res.status(422).json({
+      err
+    })
+  }
 };
 
 //get retailer's purchase requests
@@ -63,10 +83,29 @@ exports.getPurchasedProduces = (req, res) => {
 };
 
 //get all retrailer's producces
-exports.getAllProduces = (req, res) => {
-  res.status(200).json({
-    message: "All Produces",
-  });
+exports.getAllProduces = async (req, res) => {
+  try{
+    const retailerId = parseInt(req.params.id)
+    const retailerproduces = await prisma.product.findMany({
+      where:{
+        retailerId
+      }
+    })
+    if (retailerproduces.length < 1) {
+      return res.status(404).json({ message: "retailer has no products yet"});
+    }
+    else{
+      res.status(200).json({
+        retailerproduces,
+        message: "All Produces",
+       })
+    }
+  }catch(err){
+    console.log(err)
+    res.status(422).json({
+      err
+    })
+  }
 };
 
 //get retailer's available produces

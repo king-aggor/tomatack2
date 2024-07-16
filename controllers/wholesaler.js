@@ -15,7 +15,7 @@ exports.getWholesaler = async (req, res) => {
     })
    res.status(200).json({
     wholesaler
-   })
+   }) 
   }catch(err){
     console.log(err)
     res.status(422).json({
@@ -25,6 +25,7 @@ exports.getWholesaler = async (req, res) => {
 };
 
 //get all farmer's available produce
+// its supposed to be all the farmers not just one 
 exports.farmerAvailableProduces = async (req, res) => {
   try{
     const farmerId = parseInt(req.params.id)
@@ -113,8 +114,10 @@ exports.declineRequest = async (req, res) => {
         id: batch_no
       },
       data:{
-        request: false
-      },
+        request: {
+          status: false,
+        }
+      }
     })
   res.status(200).json({
     request,
@@ -134,24 +137,33 @@ exports.acceptRequest = async (req, res) => {
     const batch_no = parseInt(req.params.id)
     const request = await prisma.product.update({
       where:{
-        id: batch_no
+        batch_no,
+        wholesalerId
+      }
+    })
+    const retailerId = parseInt(requestedProduce.request.retailerId)
+    await prisma.product.update({
+      where:{
+        batch_no,
+        wholesalerId
       },
       data:{
-        request: true,
-        wholesalerId: wholesalerid
-      },
+        request:{
+          status:false
+        },
+        retailerId
+    }
     })
-  res.status(200).json({
-    request,
-    message: "Decline request",
-  });
-}catch(err){
-  console.log(err)
-  res.status(422).json({
-    err
-  })
+    res.status(200).json({
+      message:"Purchase Confirmed"
+    })
+  }catch(err){
+    console.log(err)
+    res.status(422).json({
+      err
+    });
+  }
 }
-};
 
 
 //get wholesaler's purchase requests

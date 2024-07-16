@@ -38,5 +38,8 @@ router.get("/all-produces/:id", wholesalerController.getAllProduces);
 // get wholesaler available produces
 router.get("/available-produces", wholesalerController.getAvailableProduces);
 
+//post accepst requests
+router.post("/accept-request/:id", wholesalerController.acceptRequest)
+
 // exporting router
 module.exports = router;
