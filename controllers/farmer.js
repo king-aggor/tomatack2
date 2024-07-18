@@ -2,8 +2,9 @@
 const {PrismaClient}= require("@prisma/client");
 const { PurchaseRequest } = require("./wholesaler");
 
-// creater an instace of prisma
+// create an instance of prisma
 const prisma = new PrismaClient()
+
 // get farmer
 exports.getFarmer = async (req, res) => {
   try{
@@ -34,13 +35,15 @@ exports.addProduce = async (req, res) => {
       harvest_date: new Date(req.body.harvest_date),
       price:req.body.price,
       farmer:{
-        connect:{id}
+        connect:{
+          id
+        }
       },
-      request: {
-        status: false
-      }
-    }
-  })
+      request:{
+        status:false
+      },
+  }
+})
  res.status(200).json({
   message: "Produce added successfully"
  })

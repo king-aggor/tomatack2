@@ -9,10 +9,7 @@ const router = express.Router();
 router.get("/:id", wholesalerController.getWholesaler);
 
 // get farmer available produces
-router.get(
-  "/farmer-available-produces/:id",
-  wholesalerController.farmerAvailableProduces
-);
+router.get("/farmer-available-produces/all", wholesalerController.farmerAvailableProduces);
 
 // post purchase request
 router.post("/purchase-request/:id", wholesalerController.PurchaseRequest);
@@ -24,7 +21,7 @@ router.post("/cancel-request/:id", wholesalerController.cancelRequest)
 router.post("/decline-request", wholesalerController.declineRequest);
 
 // get wholesaler purchase requests
-router.get("/purchase-requests", wholesalerController.getPurchaseRequests);
+router.get("/purchase-requests/:id", wholesalerController.getPurchaseRequests);
 
 // get purchased produces
 router.get("/purchased-produces", wholesalerController.getPurchasedProduces);
@@ -39,7 +36,10 @@ router.get("/all-produces/:id", wholesalerController.getAllProduces);
 router.get("/available-produces", wholesalerController.getAvailableProduces);
 
 //post accepst requests
-router.post("/accept-request/:id", wholesalerController.acceptRequest)
+router.post("/accept-request/:id", wholesalerController.acceptRequest);
+
+//get retailers purchase requests to wholesaler
+router.get("/retailers-requests/:id", wholesalerController.getRetailersRequests)
 
 // exporting router
 module.exports = router;

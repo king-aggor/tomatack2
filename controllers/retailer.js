@@ -6,7 +6,7 @@ exports.getRetailer = async (req, res) => {
     const id = parseInt(req.params.id)
     const retailer = await prisma.retailer.findUnique({
       where:{
-        id
+        id:id,
       }
     })
    res.status(200).json({
@@ -69,10 +69,29 @@ exports.purchaseRequest = async (req, res) => {
 };
 
 //get retailer's purchase requests
-exports.getRetailerPurchaseRequests = (req, res) => {
-  res.status(200).json({
-    message: "retailer Purchase requests",
-  });
+exports.getRetailerPurchaseRequests = async (req, res) => {
+  try{
+    const retailerId = parseInt(req.params.id)
+    const retailersPurchaseRequests = await prisma.product.findMany({
+        where:{
+          request: {
+            path: ['status'],
+            equals: true,
+            path: ['retailerId'],
+            equals: retailerId
+          }
+        }
+    })
+    res.status(200).json({
+      message: "Purchase Requests",
+      retailersPurchaseRequests,
+    });
+   }catch(err){
+    console.log(err)
+    res.status(422).json({
+      err
+   })
+  };
 };
 
 //get purchased produces

@@ -10,7 +10,7 @@ exports.getWholesaler = async (req, res) => {
     const id = parseInt(req.params.id)
     const wholesaler = await prisma.wholesaler.findUnique({
       where:{
-        id:id
+        id:id,
       }
     })
    res.status(200).json({
@@ -24,17 +24,18 @@ exports.getWholesaler = async (req, res) => {
   }
 };
 
-//get all farmer's available produce
-// its supposed to be all the farmers not just one 
+//get all farmers available produce
 exports.farmerAvailableProduces = async (req, res) => {
   try{
-    const farmerId = parseInt(req.params.id)
     const farmerAvailableProduces = await prisma.product.findMany({
       where: {
-        farmerId,
         wholesalerId:null,
       },
-    });
+      include: {
+        farmer: true
+      }
+  });
+  
     res.status(200).json({
       farmerAvailableProduces
      })
@@ -52,7 +53,8 @@ exports.PurchaseRequest = async (req, res) => {
     const batch_no = parseInt(req.params.id)
     const request = await prisma.product.update({
       where:{
-        batch_no
+        batch_no,
+        wholesalerId : null,
       },
       data:{
         request: {
@@ -167,18 +169,79 @@ exports.acceptRequest = async (req, res) => {
 
 
 //get wholesaler's purchase requests
-exports.getPurchaseRequests = (req, res) => {
+exports.getPurchaseRequests = async (req, res) => {
+ try{
+  const wholesalerId = parseInt(req.params.id)
+  const wholesalersPurchaseRequests = await prisma.product.findMany({
+      where:{
+        request: {
+          path: ['status'],
+          equals: true,
+          path: ['wholesalerId'],
+          equals: wholesalerId
+        }
+      }
+  })
   res.status(200).json({
     message: "Purchase Requests",
+    wholesalersPurchaseRequests,
+    
   });
+ }catch(err){
+  console.log(err)
+  res.status(422).json({
+    err
+ })
 };
+}
+
+//get retailers purchase requests to wholesaler
+exports.getRetailersRequests = async (req, res) => {
+  try{
+  const wholesalerId = parseInt(req.params.id)
+  const retailersRequests = await prisma.product.findMany({
+    where:{
+      wholesalerId,
+      request: {
+        path: ['status'],
+        equals: true,
+        path: ['retailerId'],
+        equals: retailerId
+      },
+      retailerId : null
+    }
+  })
+  res.status(200).json({
+    message: "Retailers Requests",
+    retailersRequests,
+  })
+
+  }catch(err){
+    console.log(err)
+    res.status(422).json({
+      err
+  })
+}
+}
 
 //get purchased produces by wholesaler
 exports.getPurchasedProduces = (req, res) => {
+  try{
+    const wholesalerId = parseInt(req.params.id)
+    
+
+
   res.status(200).json({
     message: "Purchased Produces",
   });
-};
+  }
+  catch(err){
+    console.log(err)
+    res.status(422).json({
+    err
+  })
+}
+}
 
 // get sold produces
 exports.getSoldProduces = async (req, res) => {

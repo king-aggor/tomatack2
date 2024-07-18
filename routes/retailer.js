@@ -6,7 +6,7 @@ const retailerController = require("../controllers/retailer"); //importing retai
 const router = express.Router();
 
 // get retailer
-router.get("/", retailerController.getRetailer);
+router.get("/:id", retailerController.getRetailer);
 
 // get wholesaler available produce
 router.get(

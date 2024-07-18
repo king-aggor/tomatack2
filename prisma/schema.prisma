@@ -65,7 +65,6 @@ model Product{
   harvest_date DateTime
   sold_date DateTime?
   price Decimal
-  // request Boolean @default(false)
   request Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
