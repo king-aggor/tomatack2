@@ -68,8 +68,8 @@ exports.purchaseRequest = async (req, res) => {
   }
 };
 
-//get retailer's purchase requests
-exports.getRetailerPurchaseRequests = async (req, res) => {
+//get retailer's orders
+exports.getOrders = async (req, res) => {
   try{
     const retailerId = parseInt(req.params.id)
     const retailersPurchaseRequests = await prisma.product.findMany({
@@ -83,7 +83,7 @@ exports.getRetailerPurchaseRequests = async (req, res) => {
         }
     })
     res.status(200).json({
-      message: "Purchase Requests",
+      message: "Retailers orders",
       retailersPurchaseRequests,
     });
    }catch(err){

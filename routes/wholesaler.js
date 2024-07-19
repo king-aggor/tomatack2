@@ -20,8 +20,8 @@ router.post("/cancel-request/:id", wholesalerController.cancelRequest)
 // post decline purchase requests
 router.post("/decline-request", wholesalerController.declineRequest);
 
-// get wholesaler purchase requests
-router.get("/purchase-requests/:id", wholesalerController.getPurchaseRequests);
+// get wholesaler orders
+router.get("/orders/:id", wholesalerController.getOrders);
 
 // get purchased produces
 router.get("/purchased-produces", wholesalerController.getPurchasedProduces);

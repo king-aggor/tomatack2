@@ -168,8 +168,8 @@ exports.acceptRequest = async (req, res) => {
 }
 
 
-//get wholesaler's purchase requests
-exports.getPurchaseRequests = async (req, res) => {
+//get wholesaler's orders
+exports.getOrders = async (req, res) => {
  try{
   const wholesalerId = parseInt(req.params.id)
   const wholesalersPurchaseRequests = await prisma.product.findMany({
@@ -183,7 +183,7 @@ exports.getPurchaseRequests = async (req, res) => {
       }
   })
   res.status(200).json({
-    message: "Purchase Requests",
+    message: "Wholesalers Orders",
     wholesalersPurchaseRequests,
     
   });
