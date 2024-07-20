@@ -1,4 +1,8 @@
 //modules
+const {PrismaClient} = require("@prisma/client")
+
+//create instance of prisma
+const prisma = new PrismaClient()
 
 // get retailer
 exports.getRetailer = async (req, res) => {
@@ -57,7 +61,6 @@ exports.purchaseRequest = async (req, res) => {
       },
     })
     res.status(200).json({
-      request,
       message: "Purchase Request successful",
     })
   }catch(err){
@@ -101,7 +104,7 @@ exports.getPurchasedProduces = (req, res) => {
   });
 };
 
-//get all retrailer's producces
+//get all retailer's produces
 exports.getAllProduces = async (req, res) => {
   try{
     const retailerId = parseInt(req.params.id)
@@ -115,8 +118,9 @@ exports.getAllProduces = async (req, res) => {
     }
     else{
       res.status(200).json({
-        retailerproduces,
         message: "All Produces",
+        retailerproduces,
+        
        })
     }
   }catch(err){

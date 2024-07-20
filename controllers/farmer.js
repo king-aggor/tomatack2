@@ -32,6 +32,7 @@ exports.addProduce = async (req, res) => {
   const produce = await prisma.product.create({
     data:{
       variety: req.body.variety,
+      quantity: req.body.quantity,
       harvest_date: new Date(req.body.harvest_date),
       price:req.body.price,
       farmer:{

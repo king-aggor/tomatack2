@@ -9,19 +9,19 @@ const router = express.Router();
 router.get("/:id", retailerController.getRetailer);
 
 // get wholesaler available produce
-router.get("/wholesaler-available-produces", retailerController.getWholesalerAvailableProduces);
+router.get("/wholesaler-available-produces/:id", retailerController.getWholesalerAvailableProduces);
 
 // post purchase request
-router.post("/purchase-request", retailerController.purchaseRequest);
+router.post("/purchase-request/:id", retailerController.purchaseRequest);
 
 //get purchase requests
-router.get("/orders", retailerController.getOrders);
+router.get("/orders/:id", retailerController.getOrders);
 
 // get purchased produces
 router.get("/purchased-produces", retailerController.getPurchasedProduces);
 
 // get all retailer's produces
-router.get("/all-produces", retailerController.getAllProduces);
+router.get("/all-produces/:id", retailerController.getAllProduces);
 
 // get retailer available produces
 router.get("/available-produces", retailerController.getRetailerAvailableProduces);

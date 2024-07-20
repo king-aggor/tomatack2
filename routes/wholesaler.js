@@ -27,13 +27,13 @@ router.get("/orders/:id", wholesalerController.getOrders);
 router.get("/purchased-produces", wholesalerController.getPurchasedProduces);
 
 // get sold produces
-router.get("/sold-produces", wholesalerController.getSoldProduces);
+router.get("/sold-produces/:id", wholesalerController.getSoldProduces);
 
 // get all produces
 router.get("/all-produces/:id", wholesalerController.getAllProduces);
 
 // get wholesaler available produces
-router.get("/available-produces", wholesalerController.getAvailableProduces);
+router.get("/available-produces/:id", wholesalerController.getAvailableProduces);
 
 //post accepst requests
 router.post("/accept-request/:id", wholesalerController.acceptRequest);

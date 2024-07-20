@@ -1,5 +1,6 @@
 //modules
 const {PrismaClient} = require("@prisma/client")
+const { PurchaseRequest } = require("./retailer");
 
 //create instance of prisma
 const prisma = new PrismaClient()
@@ -136,8 +137,9 @@ exports.declineRequest = async (req, res) => {
 //post accept purchase request
 exports.acceptRequest = async (req, res) => {
   try{
+    const wholesalerId = req.body.wholsalerId
     const batch_no = parseInt(req.params.id)
-    const request = await prisma.product.update({
+    const requestedProduce = await prisma.product.findUnique({
       where:{
         batch_no,
         wholesalerId
@@ -202,13 +204,14 @@ exports.getRetailersRequests = async (req, res) => {
   const retailersRequests = await prisma.product.findMany({
     where:{
       wholesalerId,
+      retailerId:null,
       request: {
         path: ['status'],
         equals: true,
-        path: ['retailerId'],
-        equals: retailerId
+        // path: ['retailerId'],
+        // equals: retailerId
       },
-      retailerId : null
+      
     }
   })
   res.status(200).json({
@@ -250,12 +253,15 @@ exports.getSoldProduces = async (req, res) => {
     const soldProduces = await prisma.product.findMany({
       where:{
         wholesalerId,
-        retailerid:!null,
+        retailerId:{
+          not:null
+        }
       }
     })
     res.status(200).json({
-      soldProduces,
       message: "wholesaler's sold produces",
+      soldProduces,
+      
     });
   }catch(err){
     console.log(err)
@@ -298,12 +304,13 @@ exports.getAvailableProduces = async (req, res) => {
     const wholesaleravailableproduce = await prisma.product.findMany({
       where:{
         wholesalerId,
-        retailerid:null,
+        retailerId:null,
       }
     })
     res.status(200).json({
-      wholesaleravailableproduce,
       message: "wholesaler's available produces",
+      wholesaleravailableproduce,
+      
     });
   }catch(err){
     console.log(err)

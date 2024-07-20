@@ -62,10 +62,12 @@ model Transporter{
 model Product{
   batch_no Int @id @default(autoincrement())
   variety String
+  quantity Int 
   harvest_date DateTime
   sold_date DateTime?
   price Decimal
   request Json?
+  image String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
