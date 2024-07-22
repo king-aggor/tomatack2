@@ -9,11 +9,11 @@ const wholesalerRouter = require("./routes/wholesaler"); //importing wholesalerR
 
 // create express app
 const app = express();
+const path = require('path');
 
 //middleware to use body parser
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(bodyParser.json({ limit: '50mb' }));
-
 
 // middeware to hadele cors error
 

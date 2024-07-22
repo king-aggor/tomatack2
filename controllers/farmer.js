@@ -1,6 +1,6 @@
 //modules
 const {PrismaClient}= require("@prisma/client");
-const { PurchaseRequest } = require("./wholesaler");
+const { PurchaseRequest } = require("./wholesaler"); 
 
 // create an instance of prisma
 const prisma = new PrismaClient()
@@ -29,12 +29,14 @@ exports.getFarmer = async (req, res) => {
 exports.addProduce = async (req, res) => {
  try{
   const id = parseInt(req.params.id)
+  const imageUrl = req.file.path
   const produce = await prisma.product.create({
     data:{
       variety: req.body.variety,
-      quantity: req.body.quantity,
+      quantity: parseInt(req.body.quantity),
       harvest_date: new Date(req.body.harvest_date),
-      price:req.body.price,
+      price: parseFloat(req.body.price),
+      imageUrl,
       farmer:{
         connect:{
           id
