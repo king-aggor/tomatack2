@@ -1,6 +1,6 @@
 //modules
 const {PrismaClient} = require("@prisma/client")
-require("dotenv")
+require("dotenv").config()
 //import bcrypt
 const bcrypt = require("bcrypt")
 
@@ -41,7 +41,7 @@ exports.signup = async (req, res) => {
             password: hashPassword
           }
         })
-        const token = jwt.sign(
+        const token = await jwt.sign(
           {
             role,
           },

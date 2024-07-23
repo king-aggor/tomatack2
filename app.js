@@ -6,6 +6,7 @@ const authenticationRouter = require("./routes/authentication"); //importing aut
 const farmerRouter = require("./routes/farmer"); //importing farmerRouter
 const retailerRouter = require("./routes/retailer"); //importing retailerRouter
 const wholesalerRouter = require("./routes/wholesaler"); //importing wholesalerRouter
+const morgan = require("morgan")
 
 // create express app
 const app = express();
@@ -14,6 +15,7 @@ const path = require('path');
 //middleware to use body parser
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(bodyParser.json({ limit: '50mb' }));
+app.use(morgan("dev"))
 
 // middeware to hadele cors error
 
