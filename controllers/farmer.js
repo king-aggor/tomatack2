@@ -68,10 +68,9 @@ const body = JSON.stringify({
   quantity: `${produce.quantity}`
 })
 try{
-  const response = await fetch(createEntryUrl,{
-    method: "POST",
+  const response = await axios.post(createEntryUrl, body, {
+    // method: "POST",
     headers: headers,
-    body: body
   })
   // console.log(response)
   if(response.status == 200){
