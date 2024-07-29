@@ -1,6 +1,9 @@
 //modules
 const {PrismaClient}= require("@prisma/client");
 const { PurchaseRequest } = require("./wholesaler"); 
+const { purchaseRequest } = require("./retailer");
+const axios = require("axios")
+
 
 // create an instance of prisma
 const prisma = new PrismaClient()
@@ -45,11 +48,44 @@ exports.addProduce = async (req, res) => {
       request:{
         status:false
       },
+  },
+  include: {
+    farmer: true
   }
 })
- res.status(200).json({
-  message: "Produce added successfully"
- })
+const createEntryUrl = `http://${process.env.Blockchain_domain}:${process.env.Blockchain_farmer_port}/newEntry`
+const headers = {
+  "Content-Type": "application/json"
+}
+const body = JSON.stringify({
+  id: `${produce.batch_no}`,
+  farmerId: `${produce.farmerId}`,
+  farmLocation: `${produce.farmer.region}`,
+  variety: `${produce.variety}`,
+  batchNo: `${produce.batch_no}`,
+  harvestDate: `${produce.harvest_date}`,
+  price: `${produce.price}`,
+  quantity: `${produce.quantity}`
+})
+try{
+  const response = await fetch(createEntryUrl,{
+    method: "POST",
+    headers: headers,
+    body: body
+  })
+  // console.log(response)
+  if(response.status == 200){
+    res.status(200).json({
+      message: "Produce added successfully",
+     })
+  }
+}catch(err){
+  console.log(err)
+  res.status(404).json({
+    message: "Unable to create entry",
+    err
+  })
+}
  }catch(err){
   console.log(err)
   res.status(422).json({
@@ -60,23 +96,34 @@ exports.addProduce = async (req, res) => {
 
 // get produce
 exports.getProduce = async (req, res) => {
-  try{
-    const batch_no = parseInt(req.params.id)
-    const produce = await prisma.product.findUnique({
-      where:{
-        batch_no
+    const batch_no = parseInt(req.params.id)  
+    const getEntryUrl = `http://${process.env.Blockchain_domain}:${process.env.Blockchain_farmer_port}/getEntry?id=${batch_no}`
+    const headers = {
+      "Content-Type": "application/json"
+    }
+    try{
+      const response = await axios.get(getEntryUrl ,{
+        headers: headers,
+      });
+      const produce = response.data
+      if(response.status == 200){
+        console.log(response.data)
+        res.status(200).json({
+          message: "Produce",
+          produce
+        })
       }
-    })
-    res.status(200).json({
-      message: "Get produce",
-      produce
-    });
-  }catch(err){
-    console.log(err)
-    res.status(422).json({
-      err
-    })
-  }
+      else{
+        res.status(422).json({
+          message: " Unable to fetch produce details",
+         })
+      }
+    }catch(err){
+      console.log(err)
+      res.status(422).json({
+        err
+      })
+    }
 };
 
 //delete produce
@@ -85,7 +132,8 @@ exports.deleteProduce = async (req, res) => {
     const batch_no = parseInt(req.params.id)
     await prisma.product.delete({
       where:{
-        batch_no
+        batch_no,
+        wholesalerId:null
       }
     })
     res.status(200).json({
@@ -174,6 +222,7 @@ exports.getPurchaseRequests = async (req, res) => {
         }
       }
     })
+    console.log(purchaseRequests)
     res.status(200).json({
       message: "Farmer Purchase requests",
       purchaseRequests
@@ -197,7 +246,7 @@ exports.confirmPurchaseRequest = async (req, res) => {
       }
     })
     const wholesalerId = parseInt(requestedProduce.request.wholesalerId)
-    await prisma.product.update({
+    const confirmedPurchase = await prisma.product.update({
       where:{
         batch_no,
         farmerId
@@ -207,16 +256,54 @@ exports.confirmPurchaseRequest = async (req, res) => {
           status:false
         },
         wholesalerId
+      },
+    include:{
+      wholesaler:true
     }
     })
-    res.status(200).json({
-      message:"Purchase Confirmed"
+    console.log(confirmedPurchase)
+    const wholesalerUpdateUrl = `http://${process.env.Blockchain_domain}:${process.env.Blockchain_wholesaler_port}/wholeSalerUpdate`
+    console.log(wholesalerUpdateUrl)
+    const headers = {
+      "Content-Type": "application/json"
+    }
+    console.log(1)
+    const body = JSON.stringify({
+      id: `${confirmedPurchase.batch_no}`,
+      wholesalerId: `${confirmedPurchase.wholesaler.id}`,
+      wholesalerName: `${confirmedPurchase.wholesaler.name}`
     })
+    console.log(2)
+    try{
+      console.log(3)
+      const response = await fetch(wholesalerUpdateUrl,{
+        method: "POST",
+        headers: headers,
+        body: body
+      })
+      console.log(response)
+      if(response.status == 200){
+        res.status(200).json({
+          message:"Purchase Confirmed"
+        })
+      }
+      else{
+        res.status(404).json({
+          message: "Unable to update entry",
+          status:response.status
+        })
+      }
+    }catch(err){
+      res.status(422).json({
+        message: "unable to update entry",
+        err
+      })
+    }
   }catch(err){
     console.log(err)
     res.status(422).json({
       err
-    });
+    })
   }
 };
 

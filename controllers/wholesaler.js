@@ -60,7 +60,8 @@ exports.PurchaseRequest = async (req, res) => {
       data:{
         request: {
           status: true,
-          wholesalerId: req.body.wholesalerId
+          wholesalerId: req.body.wholesalerId,
+          wholesalerName: req.body.wholesalerName
         }
       },
     })
@@ -146,7 +147,7 @@ exports.acceptRequest = async (req, res) => {
       }
     })
     const retailerId = parseInt(requestedProduce.request.retailerId)
-    await prisma.product.update({
+    const acceptedRequest = await prisma.product.update({
       where:{
         batch_no,
         wholesalerId
@@ -156,11 +157,47 @@ exports.acceptRequest = async (req, res) => {
           status:false
         },
         retailerId
+    },
+    include:{
+      retailer: true
     }
     })
-    res.status(200).json({
-      message:"Purchase Confirmed"
+    const retailerUpdateUrl = `http://${process.env.Blockchain_domain}:${process.env.Blockchain_retailer_port}/retailerUpdate`
+    const headers = {
+      "Content-Type": "application/json"
+    }
+    const body = JSON.stringify({
+      id: `${acceptedRequest.batch_no}`,
+      retailerId: `${acceptedRequest.retailer.id}`,
+      retailerName: `${acceptedRequest.retailer.name}`
     })
+    try{
+      const response = await fetch(retailerUpdateUrl,{
+        method: "POST",
+        headers: headers,
+        body: body
+      })
+      console.log(response)
+      if(response.status == 200){
+        res.status(200).json({
+          message:"Purchase Confirmed"
+        })
+      }
+      else{
+        res.status(404).json({
+          message: "Unable to update entry 1",
+          status:response.status
+        })
+      }
+    }catch(err){
+      res.status(404).json({
+        message: "Unable to update entry",
+        err
+      })
+    }
+    // res.status(200).json({
+    //   message:"Purchase Confirmed"
+    // })
   }catch(err){
     console.log(err)
     res.status(422).json({
@@ -208,8 +245,8 @@ exports.getRetailersRequests = async (req, res) => {
       request: {
         path: ['status'],
         equals: true,
-        // path: ['retailerId'],
-        // equals: retailerId
+        path: ['retailerId'],
+        equals: retailerId
       },
       
     }

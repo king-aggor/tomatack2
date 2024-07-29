@@ -9,7 +9,7 @@ const router = express.Router();
 router.get("/:id", retailerController.getRetailer);
 
 // get wholesaler available produce
-router.get("/wholesaler-available-produces/:id", retailerController.getWholesalerAvailableProduces);
+router.get("/wholesaler-available-produces/all", retailerController.getWholesalerAvailableProduces);
 
 // post purchase request
 router.post("/purchase-request/:id", retailerController.purchaseRequest);
@@ -26,8 +26,8 @@ router.get("/all-produces/:id", retailerController.getAllProduces);
 // get retailer available produces
 router.get("/available-produces", retailerController.getRetailerAvailableProduces);
 
-// post generate QR-code
-router.post("/generate-qrcode", retailerController.generateQRCode);
+// get generate QR-code
+router.get("/generate-qrcode/:id", retailerController.generateQRCode);
 
 // export router
 module.exports = router;

@@ -10,7 +10,7 @@ const morgan = require("morgan")
 
 // create express app
 const app = express();
-const path = require('path');
+// const path = require('path');
 
 //middleware to use body parser
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
