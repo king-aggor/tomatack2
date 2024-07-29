@@ -9,7 +9,7 @@ const router = express.Router();
 router.get("/:id", wholesalerController.getWholesaler);
 
 // get farmer available produces
-router.get("/farmer-available-produces/all", wholesalerController.farmerAvailableProduces);
+router.get("/farmer-available-produces/all/:id", wholesalerController.farmerAvailableProduces);
 
 // post purchase request
 router.post("/purchase-request/:id", wholesalerController.PurchaseRequest);

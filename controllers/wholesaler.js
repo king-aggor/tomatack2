@@ -28,6 +28,7 @@ exports.getWholesaler = async (req, res) => {
 //get all farmers available produce
 exports.farmerAvailableProduces = async (req, res) => {
   try{
+    const id = parseInt(req.params.id)
     const farmerAvailableProduces = await prisma.product.findMany({
       where: {
         wholesalerId:null,
@@ -36,9 +37,15 @@ exports.farmerAvailableProduces = async (req, res) => {
         farmer: true
       }
   });
+  const wholesaler = await prisma.wholesaler.findUnique({
+    where:{
+      id
+    }
+  })
   
     res.status(200).json({
-      farmerAvailableProduces
+      farmerAvailableProduces,
+      wholesaler
      })
   }catch(err){
     console.log(err)

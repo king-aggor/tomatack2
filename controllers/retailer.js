@@ -30,6 +30,7 @@ exports.getRetailer = async (req, res) => {
 //get all wholesaler' available produce
 exports.getWholesalerAvailableProduces = async (req, res) => {
   try{
+    const id = req.params.id
     // const wholesalerId = parseInt(req.params.id)
     const wholesalerAvailableProduces = await prisma.product.findMany({
       where: {
@@ -39,8 +40,14 @@ exports.getWholesalerAvailableProduces = async (req, res) => {
         retailerId:null,
       },
     });
+    const retailer = prisma.retailer.findUnique({
+      where:{
+        id
+      }
+    })
     res.status(200).json({
-      wholesalerAvailableProduces
+      wholesalerAvailableProduces,
+      retailer
      })
   }catch(err){
     console.log(err)
