@@ -68,15 +68,21 @@ const body = JSON.stringify({
   quantity: `${produce.quantity}`
 })
 try{
-  const response = await axios.post(createEntryUrl, body, {
+  const response = await axios.post(createEntryUrl,body, {
     // method: "POST",
     headers: headers,
+    // body:body
+    // timeout: 600000
   })
-  // console.log(response)
   if(response.status == 200){
     res.status(200).json({
       message: "Produce added successfully",
      })
+  }
+  else{
+    res.status(response.status).json({
+      message:response.status
+    })
   }
 }catch(err){
   console.log(err)
@@ -97,6 +103,7 @@ try{
 exports.getProduce = async (req, res) => {
     const batch_no = parseInt(req.params.id)  
     const getEntryUrl = `http://${process.env.Blockchain_domain}:${process.env.Blockchain_farmer_port}/getEntry?id=${batch_no}`
+    console.log(getEntryUrl)
     const headers = {
       "Content-Type": "application/json"
     }
